@@ -11,6 +11,8 @@ import Foundation
 
 struct CardView: View {
     @Environment(\.accessibilityDifferentiateWithoutColor) var accessibilityDifferentiateWithoutColor
+    @Environment(\.accessibilityVoiceOverEnabled) var accessibilityVoiceOverEnabled // Может сказать включен ли Войс овер
+    
     
     let card: Card
     @State private var isShowingAnswer = false
@@ -21,29 +23,35 @@ struct CardView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 25)
                 .fill(
-                    accessibilityDifferentiateWithoutColor
+                    accessibilityDifferentiateWithoutColor // дольтанизм
                         ? .white
                         : .white
                             .opacity(1 - Double(abs(offset.width / 50)))
 
                 )
                 .background(
-                    accessibilityDifferentiateWithoutColor
+                    accessibilityDifferentiateWithoutColor // для показа цветов для люде с дольтанизмом
                         ? nil
                         : RoundedRectangle(cornerRadius: 25)
                             .fill(offset.width > 0 ? .green : .red)
                 )
                 .shadow(radius: 10)
 
-            VStack {
-                Text(card.prompt)
-                    .font(.largeTitle)
-                    .foregroundStyle(.black)
+            VStack { // проект 17 12/13
+                if accessibilityVoiceOverEnabled { // Войс овер если включен то будет читать вот это
+                    Text(isShowingAnswer ? card.answer : card.prompt)
+                        .font(.largeTitle)
+                        .foregroundStyle(.black)
+                } else {
+                    Text(card.prompt)
+                        .font(.largeTitle)
+                        .foregroundStyle(.black)
 
-                if isShowingAnswer {
-                    Text(card.answer)
-                        .font(.title)
-                        .foregroundStyle(.secondary)
+                    if isShowingAnswer {// показать ответ при тапе(ф-ия)
+                        Text(card.answer)
+                            .font(.title)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .padding(20)
@@ -55,8 +63,9 @@ struct CardView: View {
         .opacity(2 - Double(abs(offset.width / 50))) // повышаем прозрачность по мере удаления
         // И нам не важно в какую сторону сдивнется в (право - полодительный оффсет) или (влево - отрицательный оффсет будет ) Определяем по оффсету
         // Ставит 2 - что бы оффсет не сразу менял значение опасити , а тоько через определенное расстояние  и картока будет вплоть до 1 оставаться непрозрачной
+        .accessibilityAddTraits(.isButton) // Видит Ячейку как кнопки и с ограниченными возможностями лучше понятно что он нажимает
         .gesture(
-            DragGesture()
+            DragGesture() // жест перемешения
                 .onChanged { gesture in
                     offset = gesture.translation
                 }
@@ -68,9 +77,10 @@ struct CardView: View {
                     }
                 }
         )
-        .onTapGesture {
+        .onTapGesture { // тап по нажатию на акрточку
             isShowingAnswer.toggle()
         }
+        .animation(.bouncy, value: offset) // Анимация отскока когда отпускаем карточку
     }
 }
 
