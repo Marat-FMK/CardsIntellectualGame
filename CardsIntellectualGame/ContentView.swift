@@ -25,7 +25,7 @@ struct ContentView: View {
     
         var body: some View {
             ZStack {
-                Image(decorative: "background")
+                Image(decorative: "background") // Делаем  картинку нечитаемой в VoiceOver
                     .resizable()
                     .ignoresSafeArea()
                 VStack {
@@ -44,6 +44,7 @@ struct ContentView: View {
                                 }
                             }
                             .allowsHitTesting(index == cards.count - 1) // Что бы при свайпе реагировала только верхняя карточка
+                            .accessibilityHidden(index < cards.count - 1) // Читает Voice только верхнюю карточку
                             .stacked(at: index, in: cards.count) // работает с оффсетами стопки карточек
                             
                         }
