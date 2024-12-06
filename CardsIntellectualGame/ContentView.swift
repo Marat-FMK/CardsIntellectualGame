@@ -170,7 +170,7 @@ struct ContentView: View {
     func resetCards() { // обновляем игру и устанавливаем значения в начальное состояние и запускам таймер
         timeRemaining = 100
         isActive = true
-        loadData() // обновлять всегда 
+        loadData() // обновлять всегда
     }
     
     func loadData() {
