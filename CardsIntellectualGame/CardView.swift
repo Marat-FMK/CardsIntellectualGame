@@ -86,7 +86,8 @@ struct CardView: View {
                     // Задание 3 Пола Хадсона
                     if offset.width < 100 {
                         removal?()
-                        cards.insert(card, at: 0)
+                        cards.insert(card, at: 0) // Добавим последним
+//                        cards.insert(card, at: Int.random(in: 0...cards.count-1)) // Добавит в рандомное место массива
                     }
                     
                     if offset.width > 100 {
