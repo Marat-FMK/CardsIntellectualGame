@@ -13,11 +13,16 @@ struct CardView: View {
     @Environment(\.accessibilityDifferentiateWithoutColor) var accessibilityDifferentiateWithoutColor
     @Environment(\.accessibilityVoiceOverEnabled) var accessibilityVoiceOverEnabled // Может сказать включен ли Войс овер
     
-    
     let card: Card
     @State private var isShowingAnswer = false
     @State private var offset = CGSize.zero
-    var removal: (() -> Void)? = nil
+    
+    @Binding var cards: [Card]
+    
+    var removal: (() -> Void)? = nil // in clousure
+    
+    
+    
     
     var body: some View {
         ZStack {
@@ -70,20 +75,36 @@ struct CardView: View {
                     offset = gesture.translation
                 }
                 .onEnded { _ in
-                    if abs(offset.width) > 100 {
+//                    if abs(offset.width) > 100 { // Изначально
+//                        removal?()
+//                    } else {
+//                        withAnimation(.bouncy) {
+//                            offset = .zero
+//                        }
+//                    }
+                    
+                    // Задание 3 Пола Хадсона
+                    if offset.width < 100 {
+                        removal?()
+                        cards.insert(card, at: 0)
+                    }
+                    
+                    if offset.width > 100 {
                         removal?()
                     } else {
-                        offset = .zero
+                        withAnimation(.bouncy) {
+                            offset = .zero
+                        }
                     }
                 }
         )
         .onTapGesture { // тап по нажатию на акрточку
             isShowingAnswer.toggle()
         }
-        .animation(.bouncy, value: offset) // Анимация отскока когда отпускаем карточку
+//        .animation(.bouncy, value: offset) // Анимация отскока когда отпускаем карточку //(заменит модификатор строчкой в ф-ии onEnded DragGesture)
     }
 }
 
-#Preview {
-    CardView(card: .example)
-}
+//#Preview {
+//    CardView(card: .example)
+//}

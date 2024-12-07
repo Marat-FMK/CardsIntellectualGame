@@ -44,7 +44,7 @@ struct ContentView: View {
                         .clipShape(.capsule)
                     ZStack {
                         ForEach(0..<cards.count, id: \.self) { index in
-                            CardView(card: cards[index]) {
+                            CardView(card: cards[index], cards: $cards) {
                                 withAnimation {
                                     removeCard(at: index) // удаляем карточки с аимацией
                                 }
